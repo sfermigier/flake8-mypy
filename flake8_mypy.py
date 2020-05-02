@@ -98,6 +98,9 @@ DEFAULT_ARGUMENTS = make_arguments(
     # adventurous.
     disallow_untyped_defs=False,
     check_untyped_defs=False,
+
+    # Discard the error summary to avoid interpreting it as an error.
+    no_error_summary=True
 )
 
 
