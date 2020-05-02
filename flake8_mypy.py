@@ -49,57 +49,6 @@ def make_arguments(**kwargs: Union[str, bool]) -> List[str]:
     return result
 
 
-def calculate_mypypath() -> List[str]:
-    """Return MYPYPATH so that stubs have precedence over local sources."""
-
-    typeshed_root = None
-    count = 0
-    started = time.time()
-    for parent in itertools.chain(
-        # Look in current script's parents, useful for zipapps.
-        Path(__file__).parents,
-        # Look around site-packages, useful for virtualenvs.
-        Path(mypy.api.__file__).parents,
-        # Look in global paths, useful for globally installed.
-        Path(os.__file__).parents,
-    ):
-        count += 1
-        candidate = parent / 'lib' / 'mypy' / 'typeshed'
-        if candidate.is_dir():
-            typeshed_root = candidate
-            break
-
-        # Also check the non-installed path, useful for `setup.py develop`.
-        candidate = parent / 'typeshed'
-        if candidate.is_dir():
-            typeshed_root = candidate
-            break
-
-    LOG.debug(
-        'Checked %d paths in %.2fs looking for typeshed. Found %s',
-        count,
-        time.time() - started,
-        typeshed_root,
-    )
-
-    if not typeshed_root:
-        return []
-
-    stdlib_dirs = ('3.7', '3.6', '3.5', '3.4', '3.3', '3.2', '3', '2and3')
-    stdlib_stubs = [
-        typeshed_root / 'stdlib' / stdlib_dir
-        for stdlib_dir in stdlib_dirs
-    ]
-    third_party_dirs = ('3.7', '3.6', '3', '2and3')
-    third_party_stubs = [
-        typeshed_root / 'third_party' / tp_dir
-        for tp_dir in third_party_dirs
-    ]
-    return [
-        str(p) for p in stdlib_stubs + third_party_stubs
-    ]
-
-
 # invalid_types.py:5: error: Missing return statement
 MYPY_ERROR_TEMPLATE = r"""
 ^
@@ -175,9 +124,6 @@ class MypyChecker:
 
         if not visitor.should_type_check:
             return  # typing not used in the module
-
-        if not self.options.mypy_config and 'MYPYPATH' not in os.environ:
-            os.environ['MYPYPATH'] = ':'.join(calculate_mypypath())
 
         # Always put the file in a separate temporary directory to avoid
         # unexpected clashes with other .py and .pyi files in the same original
