@@ -29,7 +29,7 @@ if TYPE_CHECKING:
     import flake8.options.manager.OptionManager  # noqa
 
 
-__version__ = '17.8.0'
+__version__ = '20.5.0'
 
 
 noqa = re.compile(r'# noqa\b', re.I).search

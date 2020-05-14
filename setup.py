@@ -36,13 +36,14 @@ with open(os.path.join(current_dir, 'flake8_mypy.py'), 'r', encoding='utf8') as 
 
 
 setup(
-    name='flake8-mypy',
+    name='flake8-mypy-fork',
     version=version,
-    description="A plugin for flake8 integrating mypy.",
+    description="A plugin for flake8 integrating mypy (fork).",
     long_description=long_description,
     keywords='flake8 mypy bugs linter qa typing',
     author='Łukasz Langa',
     author_email='lukasz@langa.pl',
+    maintainer='Stefane Fermigier',
     url='https://github.com/ambv/flake8-mypy',
     license='MIT',
     py_modules=['flake8_mypy'],
